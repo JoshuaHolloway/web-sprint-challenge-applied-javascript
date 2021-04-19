@@ -16,7 +16,42 @@ const Card = (article) => {
   //     <span>By { authorName }</span>
   //   </div>
   // </div>
-  //
+  
+  // <div class="card">
+  const card = document.createElement('div');
+  card.classList.add('card');
+
+  //   <div class="headline">{ headline }</div>
+  const headline = document.createElement('div');
+  headline.classList.add('headline');
+  headline.textContent = article.headline;
+  card.append(headline);
+
+  //   <div class="author">
+  const author = document.createElement('div');
+  author.classList.add('author');
+  // card.append(author);
+
+  //     <div class="img-container">
+  const img_container = document.createElement('div');
+  img_container.classList.add('img-container');
+  
+  //       <img src={ authorPhoto }>
+  const img = document.createElement('img');
+  img.src = article.authorPhoto;
+
+  img_container.append(img);
+  author.append(img_container);
+
+  const span = document.createElement('span');
+  span.textContent = `By ${article.authorName}`;
+
+  author.append(span);
+
+  card.append(author);
+
+
+  return card;
 }
 
 const cardAppender = (selector) => {
@@ -28,6 +63,19 @@ const cardAppender = (selector) => {
   // Create a card from each and every article object in the response, using the Card component.
   // Append each card to the element in the DOM that matches the selector passed to the function.
   //
+
+  const url = 'https://lambda-times-api.herokuapp.com/articles';
+  fetch('https://lambda-times-api.herokuapp.com/articles')
+  .then(response => response.json())
+  .then(data => {
+    const articles = Object.values(data.articles).flat();
+    articles.forEach(article => {
+      const card = Card(article);
+      const elem = document.querySelector(selector);
+      elem.append(card);
+    });
+  })
+  .catch(error => console.log(error));
 }
 
 export { Card, cardAppender }
